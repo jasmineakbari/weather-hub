@@ -1,7 +1,7 @@
-var getWeather = function(city) {
+var getWeather = function() {
     //format the github api url
-    var apiUrl = fetch("api.openweathermap.org/data/2.5/forecast?zip=94040,us&appid=a2dd844fa915b1c2936067736b330124")
-    .then(console.log(apiUrl))
+    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + "orlando" + "&appid=" + "03b57575688ded7ffa5d8cffaa391e7a"
+    console.log(apiUrl)
 }
 
 getWeather()
