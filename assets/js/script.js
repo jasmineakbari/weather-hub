@@ -12,7 +12,7 @@ var getWeather = function(city) {
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
-                console.log(data, city)
+                displayCityWeather(data, city)
             })
         } else {
             alert("Error: " + response.statusText);
@@ -39,23 +39,28 @@ var formSubmitHandler = function(event) {
 }
 
 // display city information function
-var displayCityWeather = function(weather, city) {
-    // will need to add city name to recent searches as button
+var displayCityWeather = function(city, date) {
+    console.log(city)
+    console.log(date)
+    var list = "list: Array"
 
     // clear old content first
     futureWeather.textContent = ""
     currentWeather.textContent = ""
 
-    for (var i = 0; i < currentWeather.length; i++) {
-        // format City Name
-        var cityName = city
+    for (var i = 0; i < list.length; i++) {
 
         // create card and apply attributes
         var cityCardEl = document.createElement("div")
-        cityCardEl.classList = "col-4 card text-white bg-primary mb-3"
-        cityCardEl.textContent = cityName
+        cityCardEl.classList = "card text-white bg-primary mb-3"
+        var cityHeaderEl = document.createElement("div")
+        cityHeaderEl.classList = "card-header"
+        cityHeaderEl.textContent = (city)
 
+        cityCardEl.appendChild(cityHeaderEl)
         currentWeather.appendChild(cityCardEl)
+
+        // will need to add city name to recent searches as button
     }
 
 }
