@@ -1,18 +1,34 @@
+var id = "03b57575688ded7ffa5d8cffaa391e7a"
+var cityList = []
+
 var cityInputEl = document.querySelector("#city-name")
 var cityFormEl = document.querySelector(".form-inline")
 var searchHistory = document.querySelector(".recent-searches")
 var futureWeather = document.querySelector(".future")
 var currentWeather = document.querySelector(".today")
 
+// stores recent city search in localStorage
+function recentSearch() {
+    localStorage.setItem("cities", JSON.stringify(cityList));
+}
+
+// adds last searched city to list-group as button for user to select city
+function createCityList(){
+    $(".recent-searches").empty();
+    cityList.forEach(function(city) {
+        $(".recent-searches").prepend($(`<button class="list-group-item list-group-item-action cityButton" data-city="${city}">${city}</button>`));
+    })
+}
+
 // fetch api data function
 var getWeather = function(city) {
-    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + "03b57575688ded7ffa5d8cffaa391e7a"
+    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + id
     
     fetch(apiUrl)
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
-                displayCityWeather(data, city)
+                getCityForecast(data, city)
             })
         } else {
             alert("Error: " + response.statusText);
@@ -33,36 +49,17 @@ var formSubmitHandler = function(event) {
     if (cityName) {
         getWeather(cityName)
         cityInputEl.value = "";
+        cityList.push(cityName);
+        recentSearch();
+        createCityList();
     } else {
         alert("Please enter Valid U.S City Name")
     }
 }
 
 // display city information function
-var displayCityWeather = function(city, date) {
+var getCityForecast = function(city, coord) {
     console.log(city)
-    console.log(date)
-    var list = "list: Array"
-
-    // clear old content first
-    futureWeather.textContent = ""
-    currentWeather.textContent = ""
-
-    for (var i = 0; i < list.length; i++) {
-
-        // create card and apply attributes
-        var cityCardEl = document.createElement("div")
-        cityCardEl.classList = "card text-white bg-primary mb-3"
-        var cityHeaderEl = document.createElement("div")
-        cityHeaderEl.classList = "card-header"
-        cityHeaderEl.textContent = (city)
-
-        cityCardEl.appendChild(cityHeaderEl)
-        currentWeather.appendChild(cityCardEl)
-
-        // will need to add city name to recent searches as button
-    }
-
 }
 
 // Event Listeners
