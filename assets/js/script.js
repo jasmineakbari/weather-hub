@@ -7,19 +7,6 @@ var searchHistory = document.querySelector(".recent-searches")
 var futureWeather = document.querySelector(".future")
 var currentWeather = document.querySelector(".today")
 
-// stores recent city search in localStorage
-function recentSearch() {
-    localStorage.setItem("cities", JSON.stringify(cityList));
-}
-
-// adds last searched city to list-group as button for user to select city
-function createCityList(){
-    $(".recent-searches").empty();
-    cityList.forEach(function(city) {
-        $(".recent-searches").prepend($(`<button class="list-group-item list-group-item-action cityButton" data-city="${city}">${city}</button>`));
-    })
-}
-
 // fetch api data function
 var getWeather = function(city) {
     var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + id
@@ -28,7 +15,10 @@ var getWeather = function(city) {
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
-                getCityForecast(data, city)
+                // variable to hold lat and long
+                var cityLat = data.city.coord[0]
+                var cityLon = data.city.coord[1]
+                console.log(cityLat, cityLon)
             })
         } else {
             alert("Error: " + response.statusText);
@@ -49,17 +39,15 @@ var formSubmitHandler = function(event) {
     if (cityName) {
         getWeather(cityName)
         cityInputEl.value = "";
-        cityList.push(cityName);
-        recentSearch();
-        createCityList();
     } else {
         alert("Please enter Valid U.S City Name")
     }
 }
 
 // display city information function
-var getCityForecast = function(city, coord) {
+var getCityForecast = function(city) {
     console.log(city)
+ 
 }
 
 // Event Listeners
