@@ -5,7 +5,8 @@ This weather application was created with the Open Weather Map Server Side API. 
 
 Your recent searches will be saved as buttons on the left side for you to revisit by clicking the name of the city you would like to see again.
 
-<ul><h3>Built With:</h3>
+<h3>Built With:</h3>
+<ul>
 <li>HTML</li>
 <li>Javascript</li>
 <li>Bootstrap</li>
