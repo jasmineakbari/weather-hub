@@ -1,5 +1,6 @@
 var id = "03b57575688ded7ffa5d8cffaa391e7a"
 var cityList = []
+var currentCity;
 
 var cityInputEl = document.querySelector("#city-name")
 var cityFormEl = document.querySelector(".form-inline")
@@ -12,7 +13,8 @@ let today = moment().format("MM/DD/YYYY")
 // fetch api data function
 var getWeather = function(city) {
     var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + id
-    
+    currentCity = city
+
     fetch(apiUrl)
     .then(function(response) {
         if (response.ok) {
@@ -38,6 +40,12 @@ var getWeather = function(city) {
     })
 }
 
+// saves searched cities to local storage
+function storedCities() {
+    localStorage.setItem("cities", JSON.stringify(cityList));
+
+}
+
 // form handler for retrieving city object
 var formSubmitHandler = function(event) {
     event.preventDefault();
@@ -49,7 +57,8 @@ var formSubmitHandler = function(event) {
         getWeather(cityName)
         cityInputEl.value = "";
         cityList.push(cityName)
-        //searchHistory()
+        addSearchedCity(cityName)
+        storedCities()
     } else {
         alert("Please enter Valid U.S City Name")
     }
@@ -58,9 +67,15 @@ var formSubmitHandler = function(event) {
 // display city information function for todays date
 var getCityForecast = function(city) {
     console.log(city)
+    console.log(city.current.dt)
+    console.log(currentCity)
 
     // clear content first
     currentWeather.innerHTML = ""
+
+    // name of city searched
+    var cityNameEl = document.createElement("h3")
+    cityNameEl.textContent = currentCity
 
     // variable to hold image icon value
     var weatherIcon = city.current.weather[0].icon
@@ -73,33 +88,29 @@ var getCityForecast = function(city) {
 
     // create content for today info
     var todayDivEl = document.createElement("div")
-    todayDivEl.classList = "row ml-1"
-
-    //var iconImageEl = document.createElement("img")
-    //iconImageEl.setAttribute("src", iconUrl)
+    todayDivEl.classList = "row mb-3"
 
     var todayHeaderEl = document.createElement("h3")
-    todayHeaderEl.classList = "mr-3"
+    todayHeaderEl.classList = "card-title"
     todayHeaderEl.innerHTML = "(" + today + ") <img src='" + iconUrl + "'>"
 
-    var todayInfoEl = document.createElement("div")
-    todayInfoEl.classList = "p-4"
-
     var todayTempEl = document.createElement("p")
+    todayTempEl.classList = "card-text"
     todayTempEl.textContent = "Temperature: " + temp
 
     var todayHumidityEl = document.createElement("p")
+    todayHumidityEl.classList = "card-text"
     todayHumidityEl.textContent = "Humidity: " + humidity
 
     var todayWindSpeedEl = document.createElement("p")
+    todayWindSpeedEl.classList = "card-text"
     todayWindSpeedEl.textContent = "Wind Speed: " + windSpeed
 
     todayHumidityEl.appendChild(todayWindSpeedEl)
     todayTempEl.appendChild(todayHumidityEl)
-    todayInfoEl.appendChild(todayTempEl)
-    todayHeaderEl.appendChild(todayInfoEl)
-    //iconImageEl.appendChild(todayHeaderEl)
+    todayHeaderEl.appendChild(todayTempEl)
     todayDivEl.appendChild(todayHeaderEl)
+    todayDivEl.appendChild(cityNameEl)
     currentWeather.appendChild(todayDivEl)
     
     getUvi(city)
@@ -145,7 +156,8 @@ var getFutureForecast = function (city) {
         // create header div
         var forecastHeaderDiv = document.createElement("div")
         forecastHeaderDiv.classList = ("card-header")
-        forecastHeaderDiv.innerHTML = today + "<img src='" + iconUrl + "'>"
+        forecastHeaderDiv.innerHTML = moment().add(i, 'days').format("MM/DD/YYYY") 
+        + "<img src='" + iconUrl + "'>"
 
         // create text div
         var textDiv = document.createElement("div")
@@ -167,25 +179,42 @@ var getFutureForecast = function (city) {
         forecastHeaderDiv.appendChild(textDiv)
         forecastContainer.appendChild(forecastHeaderDiv)
         futureWeather.appendChild(forecastContainer)
-
-        i++
     }
 
-    //addCitySearched(city)
 }
 
 // function to display searched cities as a button
-//var addCitySearched = function() {
+var addSearchedCity = function(cityName) {
 
-//}
+    // create a button
+    var buttonEl = document.createElement("btn")
+    buttonEl.setAttribute("type", "button")
+    buttonEl.setAttribute("data-city", cityName)
+    buttonEl.classList = "btn btn-secondary"
+    buttonEl.textContent = cityName.toLowerCase()
 
-// saves searched cities to local storage
-function searchHistory() {
-    localStorage.setItem("cities", JSON.stringify(cityList));
+    searchHistory.appendChild(buttonEl)
 }
 
+
 // loads searched history from local storage
-//loadCities()
+var loadCities = function() {
+    var cityArray = JSON.parse(localStorage.getItem("cities"));
+    console.log(typeof cityArray)
+    
+    for (var i = 0; i < cityArray.length; i++) {
+        addSearchedCity(cityArray[i])
+    }
+    
+}
+
+loadCities()
 
 // Event Listeners
+searchHistory.addEventListener("click", function(event){
+    var searchHistoryBtn = event.target.attributes.getNamedItem("data-city").value
+
+    getWeather(searchHistoryBtn)
+})
+
 cityFormEl.addEventListener("submit", formSubmitHandler)
