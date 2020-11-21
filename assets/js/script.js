@@ -6,7 +6,7 @@ var cityFormEl = document.querySelector(".form-inline")
 var searchHistory = document.querySelector(".recent-searches")
 var futureWeather = document.querySelector(".forecast")
 var currentWeather = document.querySelector(".today")
-let today = new Date().toLocaleDateString()
+let today = moment().format("MM/DD/YYYY")
 
 
 // fetch api data function
@@ -57,6 +57,9 @@ var formSubmitHandler = function(event) {
 // display city information function for todays date
 var getCityForecast = function(city) {
     console.log(city)
+
+    // clear content first
+    currentWeather.innerHTML = ""
     
     var temp = city.current.temp
     var humidity = city.current.humidity
@@ -72,18 +75,20 @@ var getCityForecast = function(city) {
 
 // function to display UVI with correct background color
 var getUvi = function(city) {
+    // get UVI value
     var uvi = city.current.uvi
-    var uviValue = city.current.uvi.value
 
-    var uviEl = document.createElement("h4")
-    uviEl.innerHTML = uvi
+    var uviEl = document.createElement("span")
+    uviEl.setAttribute = ("style", "bold")
+    uviEl.innerHTML = "<h4>UVI: " + uvi + "</h4>"
     
-    if (uviValue < 3 ) {
-        uviEl.setAttribute("background-color", "green")
-    } else if (uviValue < 7 ) {
-        uviEl.setAttribute("background-color", "yellow")
-    } else if (uviValue > 8) {
-        uviEl.setAttribute("background-color", "red")
+    // change color based on uvi value
+    if (uvi < 3 ) {
+        uviEl.classList = ("badge badge-success")
+    } else if (uvi < 7 ) {
+        uviEl.classList = ("badge badge-warning")
+    } else if (uvi > 8) {
+        uviEl.classList = ("badge badge-danger")
     
     }
     currentWeather.appendChild(uviEl)
@@ -92,6 +97,9 @@ var getUvi = function(city) {
 }
 
 var getFutureForecast = function (city) {
+
+    // clear content first
+    futureWeather.innerHTML = ""
     
     for (var i = 0; i < city.daily.length; i++) {
         // create container div
