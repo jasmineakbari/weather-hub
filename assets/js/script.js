@@ -43,7 +43,6 @@ var getWeather = function(city) {
 // saves searched cities to local storage
 function storedCities() {
     localStorage.setItem("cities", JSON.stringify(cityList));
-
 }
 
 // form handler for retrieving city object
@@ -73,10 +72,6 @@ var getCityForecast = function(city) {
     // clear content first
     currentWeather.innerHTML = ""
 
-    // name of city searched
-    var cityNameEl = document.createElement("h3")
-    cityNameEl.textContent = currentCity
-
     // variable to hold image icon value
     var weatherIcon = city.current.weather[0].icon
     var iconUrl = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
@@ -94,6 +89,10 @@ var getCityForecast = function(city) {
     todayHeaderEl.classList = "card-title"
     todayHeaderEl.innerHTML = "(" + today + ") <img src='" + iconUrl + "'>"
 
+    // name of city searched
+    var cityNameEl = document.createElement("h2")
+    cityNameEl.textContent = currentCity.toUpperCase()
+
     var todayTempEl = document.createElement("p")
     todayTempEl.classList = "card-text"
     todayTempEl.textContent = "Temperature: " + temp
@@ -108,9 +107,9 @@ var getCityForecast = function(city) {
 
     todayHumidityEl.appendChild(todayWindSpeedEl)
     todayTempEl.appendChild(todayHumidityEl)
+    todayHeaderEl.appendChild(cityNameEl)
     todayHeaderEl.appendChild(todayTempEl)
     todayDivEl.appendChild(todayHeaderEl)
-    todayDivEl.appendChild(cityNameEl)
     currentWeather.appendChild(todayDivEl)
     
     getUvi(city)
