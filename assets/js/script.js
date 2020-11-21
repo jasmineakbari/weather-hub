@@ -20,7 +20,8 @@ var getWeather = function(city) {
                 // variable to hold lat and long
                 var cityLat = data.city.coord.lat
                 var cityLon = data.city.coord.lon
-                return fetch("https://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&appid=" + id)
+                return fetch("https://api.openweathermap.org/data/2.5/onecall?lat=" 
+                + cityLat + "&lon=" + cityLon + "&units=imperial" + "&appid=" + id)
                 .then(function(response2) {
                     response2.json().then(function(data) {
                         getCityForecast(data)
@@ -60,15 +61,46 @@ var getCityForecast = function(city) {
 
     // clear content first
     currentWeather.innerHTML = ""
+
+    // variable to hold image icon value
+    var weatherIcon = city.current.weather[0].icon
+    var iconUrl = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
     
-    var temp = city.current.temp
+    // define info needed from data
+    var temp = city.current.temp + " F"
     var humidity = city.current.humidity
     var windSpeed = city.current.wind_speed
 
-    // format card info
-    currentWeather.innerHTML = "<div class='row ml-1'><h3 class='mr-3'>(" + today + ")</h3"
-    + "</div><div class='p-4'><p>Temperature: " + temp + "</p><p>Humidity: " + humidity + "</p><p> Wind Speed: " 
-    +  windSpeed + "</p></div>"
+    // create content for today info
+    var todayDivEl = document.createElement("div")
+    todayDivEl.classList = "row ml-1"
+
+    //var iconImageEl = document.createElement("img")
+    //iconImageEl.setAttribute("src", iconUrl)
+
+    var todayHeaderEl = document.createElement("h3")
+    todayHeaderEl.classList = "mr-3"
+    todayHeaderEl.innerHTML = "(" + today + ") <img src='" + iconUrl + "'>"
+
+    var todayInfoEl = document.createElement("div")
+    todayInfoEl.classList = "p-4"
+
+    var todayTempEl = document.createElement("p")
+    todayTempEl.textContent = "Temperature: " + temp
+
+    var todayHumidityEl = document.createElement("p")
+    todayHumidityEl.textContent = "Humidity: " + humidity
+
+    var todayWindSpeedEl = document.createElement("p")
+    todayWindSpeedEl.textContent = "Wind Speed: " + windSpeed
+
+    todayHumidityEl.appendChild(todayWindSpeedEl)
+    todayTempEl.appendChild(todayHumidityEl)
+    todayInfoEl.appendChild(todayTempEl)
+    todayHeaderEl.appendChild(todayInfoEl)
+    //iconImageEl.appendChild(todayHeaderEl)
+    todayDivEl.appendChild(todayHeaderEl)
+    currentWeather.appendChild(todayDivEl)
     
     getUvi(city)
 }
@@ -102,44 +134,50 @@ var getFutureForecast = function (city) {
     futureWeather.innerHTML = ""
     
     for (var i = 0; i < city.daily.length; i++) {
+        // variable to hold image icon value
+        var weatherIcon = city.daily[i].weather[0].icon
+        var iconUrl = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
+
         // create container div
         var forecastContainer = document.createElement("div")
-        forecastContainer.classList = ("card bg-primary shadow m-4")
+        forecastContainer.classList = ("card text-white bg-primary mb-3 m-4")
 
         // create header div
         var forecastHeaderDiv = document.createElement("div")
-        forecastHeaderDiv.classList = ("card-body")
-
-        // create header element
-        var forecastHeader = document.createElement("h4")
-        forecastHeader.classList = ("card-title")
-        forecastHeader.textContent = today
+        forecastHeaderDiv.classList = ("card-header")
+        forecastHeaderDiv.innerHTML = today + "<img src='" + iconUrl + "'>"
 
         // create text div
         var textDiv = document.createElement("div")
-        textDiv.classList = ("card-text")
+        textDiv.classList = ("card-body")
 
         // create text element to hold temp
         var tempEl = document.createElement("p")
-        tempEl.textContent = city.daily[i].temp.day
+        tempEl.classList = "card-text"
+        tempEl.textContent = "Temp: " + city.daily[i].temp.day + " F"
 
         // create text element to hold humidity
         var humidityEl = document.createElement("p")
-        humidityEl.textContent = city.daily[i].humidity
+        humidityEl.classList = "card-text"
+        humidityEl.textContent = "Humidity: " + city.daily[i].humidity
 
         // append children to parents
         tempEl.appendChild(humidityEl)
         textDiv.appendChild(tempEl)
-        forecastHeader.appendChild(textDiv)
-        forecastHeaderDiv.appendChild(forecastHeader)
+        forecastHeaderDiv.appendChild(textDiv)
         forecastContainer.appendChild(forecastHeaderDiv)
         futureWeather.appendChild(forecastContainer)
 
         i++
     }
+
+    //addCitySearched(city)
 }
 
 // function to display searched cities as a button
+//var addCitySearched = function() {
+
+//}
 
 // saves searched cities to local storage
 function searchHistory() {
