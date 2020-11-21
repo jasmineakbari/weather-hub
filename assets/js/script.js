@@ -16,9 +16,15 @@ var getWeather = function(city) {
         if (response.ok) {
             response.json().then(function(data) {
                 // variable to hold lat and long
-                var cityLat = data.city.coord[0]
-                var cityLon = data.city.coord[1]
-                console.log(cityLat, cityLon)
+                var cityLat = data.city.coord.lat
+                var cityLon = data.city.coord.lon
+                return fetch("https://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&appid=" + id)
+                .then(function(response2) {
+                    response2.json().then(function(data) {
+                        getCityForecast(data)
+                    })
+                })
+                getCityForecast(data)
             })
         } else {
             alert("Error: " + response.statusText);
@@ -47,7 +53,19 @@ var formSubmitHandler = function(event) {
 // display city information function
 var getCityForecast = function(city) {
     console.log(city)
- 
+    
+    // get todays date for card title
+    let today = new Date().toLocaleDateString()
+    var temp = city.current.temp
+    var humidity = city.current.humidity
+    var windSpeed = city.current.wind_speed
+
+    // format card info
+    currentWeather.innerHTML = "<div class='row ml-1'><h3 class='mr-3'>(" + today + ")</h3"
+    + "</div><div class='p-4'><p>Temperature: " + temp + "</p><p>Humidity: " + humidity + "</p><p> Wind Speed: " 
+    +  windSpeed + "</p></div>"
+
+    
 }
 
 // Event Listeners
