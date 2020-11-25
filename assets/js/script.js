@@ -12,7 +12,7 @@ let today = moment().format("MM/DD/YYYY")
 
 // fetch api data function
 var getWeather = function(city) {
-    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + id
+    var apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + id
     currentCity = city
 
     fetch(apiUrl)
@@ -74,7 +74,7 @@ var getCityForecast = function(city) {
 
     // variable to hold image icon value
     var weatherIcon = city.current.weather[0].icon
-    var iconUrl = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
+    var iconUrl = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
     
     // define info needed from data
     var temp = city.current.temp + " F"
@@ -146,7 +146,7 @@ var getFutureForecast = function (city) {
     for (var i = 0; i < city.daily.length; i++) {
         // variable to hold image icon value
         var weatherIcon = city.daily[i].weather[0].icon
-        var iconUrl = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
+        var iconUrl = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
 
         // create container div
         var forecastContainer = document.createElement("div")
