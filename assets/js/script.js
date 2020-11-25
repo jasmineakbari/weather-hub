@@ -201,6 +201,10 @@ var loadCities = function() {
     var cityArray = JSON.parse(localStorage.getItem("cities"));
     console.log(typeof cityArray)
     
+    if (cityArray !== null) {
+        cityList = cityArray;
+    }
+
     for (var i = 0; i < cityArray.length; i++) {
         addSearchedCity(cityArray[i])
     }
